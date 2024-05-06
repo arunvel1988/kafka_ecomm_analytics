@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka Messages</title>
+</head>
+<body>
+    <h1>Kafka Messages</h1>
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    <p>Debug Output: {{ messages }}</p>  <!-- Debug output -->
+</body>
+</html>
