@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Click Analytics</title>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Product Click Analytics</h1>
+    <div id="product-clicks-chart" style="width: 800px; height: 600px;"></div>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+
+    <script>
+        var productClicks = {{ product_clicks_data|tojson }};
+
+        var data = [{
+            type: 'bar',
+            x: Object.keys(productClicks),
+            y: Object.values(productClicks),
+            marker: {
+                color: 'rgb(49, 130, 189)'
+            }
+        }];
+
+        var layout = {
+            title: 'Product Click Count',
+            xaxis: {
+                title: 'Product ID'
+            },
+            yaxis: {
+                title: 'Click Count'
+            }
+        };
+
+        Plotly.newPlot('product-clicks-chart', data, layout);
+    </script>
+</body>
+</html>
