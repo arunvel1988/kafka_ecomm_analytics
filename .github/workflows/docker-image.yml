@@ -3,7 +3,6 @@ name: Docker Image CI
 on:
   push:
     branches: [ "dashboard_analytics" ]
-  
 
 jobs:
 
@@ -27,4 +26,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/my-image-name:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/my-image-name:${{ github.sha }}
