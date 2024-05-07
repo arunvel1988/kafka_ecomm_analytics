@@ -21,9 +21,13 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
+    - name: Get current date and time
+      id: date
+      run: echo "::set-output name=timestamp::$(date +%Y%m%d%H%M%S)"
+
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/my-image-name:${{ github.sha }}
+        tags: ${{ secrets.DOCKER_USERNAME }}/ecomm-analytics:${{ steps.date.outputs.timestamp }}-${{ github.sha::8 }}
