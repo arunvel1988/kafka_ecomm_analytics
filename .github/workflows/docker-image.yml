@@ -40,8 +40,8 @@ jobs:
     # Optional: Commit the updated manifest back to the repo
     - name: Commit and push updated manifest
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "Arunvel Arunachalam"
+        git config --global user.email "aryan.arunachalam@gmail.com"
         git add manifests/app.yaml
         git commit -m "Update image tag to ${{ steps.date.outputs.timestamp }}"
         git push
