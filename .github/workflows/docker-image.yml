@@ -44,6 +44,5 @@ jobs:
         git config --global user.email "aryan.arunachalam@gmail.com"
         git add manifests/app.yaml
         git commit -m "Update image tag to ${{ steps.date.outputs.timestamp }}"
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+        git push https://x-access-token:${{ secrets.REPO_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+
