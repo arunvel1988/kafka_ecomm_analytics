@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 # Kafka consumer configuration
 conf = {
-    'bootstrap.servers': 'my-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092',
+    'bootstrap.servers': 'my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092',
     'group.id': 'my-consumer-group',
     'auto.offset.reset': 'earliest'
 }
