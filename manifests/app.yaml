@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: dash-analytics-container
-        image: arunvel1988/ecomm-analytics:20250628080714
+        image: arunvel1988/ecomm-analytics:20250628080811
         ports:
         - containerPort: 8888
 ---
