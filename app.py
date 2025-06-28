@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from confluent_kafka import Consumer, KafkaError
+from confluent_kafka import Consumer, KafkaError, KafkaException
 import json
 import threading
 import time
