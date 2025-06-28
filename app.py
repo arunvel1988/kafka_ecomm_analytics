@@ -12,7 +12,7 @@ from sqlalchemy.orm import sessionmaker
 conf = {
     'bootstrap.servers': 'my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092',
     'group.id': 'my-consumer-group',
-    'auto.offset.reset': 'earliest'
+    'auto.offset.reset': 'latest'
 }
 
 # Kafka topic to consume messages from
