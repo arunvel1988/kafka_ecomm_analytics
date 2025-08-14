@@ -1,8 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
 from kafka import KafkaConsumer
 import json
 import threading
 import time
+import csv
+import os
 
 from sqlalchemy import create_engine, Column, Integer, String, func
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -77,6 +79,23 @@ def analytics():
 
     product_clicks_dict = {product_id: click_count for product_id, click_count in product_clicks_data}
     return render_template('analytics.html', product_clicks_data=product_clicks_dict)
+
+# ✅ New endpoint to export SQLite table to CSV
+@app.route('/export_csv')
+def export_csv():
+    session = Session()
+    clicks = session.query(ProductClick).all()
+    session.close()
+
+    csv_file_path = 'product_clicks.csv'
+    with open(csv_file_path, mode='w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['product_id', 'timestamp'])  # Header
+        for click in clicks:
+            writer.writerow([click.product_id, click.timestamp])
+
+    # Send CSV file as download
+    return send_file(csv_file_path, as_attachment=True)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8888)
