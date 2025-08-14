@@ -1,18 +1,46 @@
+############################
 df = spark.read.csv("/FileStore/tables/product_clicks.csv", header=True, inferSchema=True)
 df.createOrReplaceTempView("product_clicks_csv")
 
-
+#############################
   %sql
 SELECT product_id, COUNT(*) AS click_count
 FROM product_clicks_csv
 GROUP BY product_id
 ORDER BY click_count DESC;
 
-
+#######################################
 
 %sql
 SELECT _c0 AS product_id, COUNT(*) AS click_count
 FROM product_clicks__2__csv
 GROUP BY _c0
 ORDER BY click_count DESC;
+
+###############################################
+
+display(df.groupBy("_c0").count().orderBy("count", ascending=False))
+
+#######################################################
+
+df.write.format("parquet").save("/FileStore/product_clicks_parquet")
+df.write.format("delta").save("/FileStore/product_clicks_delta")
+
+############################################
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Convert Spark DF to Pandas for plotting
+pdf = df.groupBy("_c0").count().orderBy("count", ascending=False).toPandas()
+
+plt.figure(figsize=(8,5))
+sns.barplot(x="_c0", y="count", data=pdf)
+plt.xlabel("Product ID")
+plt.ylabel("Click Count")
+plt.title("Top Clicked Products")
+plt.show()
+
+
+################################################
 
