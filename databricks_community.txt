@@ -43,4 +43,63 @@ plt.show()
 
 
 ################################################
+#Databricks Notebook: Real-time E-commerce Click Analytics
 
+from pyspark.sql.functions import col, from_json
+from pyspark.sql.types import StructType, StringType, IntegerType
+import socket
+
+#Kafka Configuration
+KAFKA_BROKER = "34.180.12.200"  # Public IP of your VM
+KAFKA_PORT = 9092
+KAFKA_TOPIC = "productclick"
+
+#Quick Kafka connectivity check
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.settimeout(5)  # 5 seconds timeout
+try:
+    sock.connect((KAFKA_BROKER, KAFKA_PORT))
+    print(f"✅ Kafka is reachable at {KAFKA_BROKER}:{KAFKA_PORT}")
+except Exception as e:
+    print(f"❌ Cannot reach Kafka at {KAFKA_BROKER}:{KAFKA_PORT}: {e}")
+finally:
+    sock.close()
+
+#Increase stop timeout to avoid TimeoutException
+spark.conf.set("spark.sql.streaming.stopTimeout", 60000)  # 60 seconds
+
+#Read Kafka stream
+df = (spark.readStream
+      .format("kafka")
+      .option("kafka.bootstrap.servers", f"{KAFKA_BROKER}:{KAFKA_PORT}")
+      .option("subscribe", KAFKA_TOPIC)
+      .option("startingOffsets", "latest")
+      .option("maxOffsetsPerTrigger", 1000)  # optional: limit per micro-batch
+      .load())
+
+#Define schema of Kafka messages
+schema = StructType() \
+    .add("product_id", StringType()) \
+    .add("timestamp", IntegerType())
+
+#Parse JSON value
+df_parsed = df.select(from_json(col("value").cast("string"), schema).alias("data")).select("data.*")
+
+#Aggregate clicks per product
+agg_df = df_parsed.groupBy("product_id").count().orderBy("count", ascending=False)
+
+#Display interactive chart in notebook
+display(agg_df)
+
+#Write aggregation to Delta table for persistent storage
+query = (agg_df.writeStream
+         .format("delta")
+         .outputMode("complete")
+         .option("checkpointLocation", "/tmp/checkpoints/product_clicks")
+         .start("/tmp/product_clicks_delta"))
+
+# Optional: safely stop query when needed
+# query.stop()
+# query.awaitTermination(60)
+
+################################################################################
