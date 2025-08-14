@@ -1,0 +1,18 @@
+df = spark.read.csv("/FileStore/tables/product_clicks.csv", header=True, inferSchema=True)
+df.createOrReplaceTempView("product_clicks_csv")
+
+
+  %sql
+SELECT product_id, COUNT(*) AS click_count
+FROM product_clicks_csv
+GROUP BY product_id
+ORDER BY click_count DESC;
+
+
+
+%sql
+SELECT _c0 AS product_id, COUNT(*) AS click_count
+FROM product_clicks__2__csv
+GROUP BY _c0
+ORDER BY click_count DESC;
+
