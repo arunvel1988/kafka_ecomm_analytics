@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Test Kafka Messages</title>
+    <title>Test Kafka Messages</title>
 </head>
 <body>
     <h1>Kafka Messages</h1>
@@ -13,6 +13,12 @@
         {% endfor %}
     </ul>
     <p>Debug Output: {{ messages }}</p> <!-- Debug output -->
+
+    <!-- Link to analytics page -->
     <a href="{{ url_for('analytics') }}">View Analytics</a>
+    <br><br>
+
+    <!-- ✅ Link to download CSV -->
+    <a href="{{ url_for('export_csv') }}" download>Download CSV</a>
 </body>
 </html>
