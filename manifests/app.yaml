@@ -17,8 +17,22 @@ spec:
         image: arunvel1988/ecomm-analytics:demo-v1
         ports:
         - containerPort: 8888
+        volumeMounts:
+        - name: kafka-tls-volume
+          mountPath: /etc/kafka  # Mount the secret at this path inside the container
+          readOnly: true  # Ensure the certificates are read-only
+      volumes:
+      - name: kafka-tls-volume
+        secret:
+          secretName: aiven-kafka-tls  # Name of the secret that holds your Kafka TLS certificates
+          items:
+            - key: ca.pem
+              path: ca.pem
+            - key: service.cert
+              path: service.cert
+            - key: service.key
+              path: service.key
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -30,4 +44,4 @@ spec:
     - protocol: TCP
       port: 8888
       targetPort: 8888
-  type: ClusterIP  # Use NodePort or ClusterIP if LoadBalancer is not available in your environment
+  type: ClusterIP  # Use NodePort or LoadBalancer if required by your environment
