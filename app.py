@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, Column, Integer, String, func
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Kafka consumer configuration
-KAFKA_BROKER = 'my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092'
+KAFKA_BROKER = 'arunvel1988-kafka-arunvel1988.e.aivencloud.com:14253'  # Aiven Kafka broker address
 TOPIC = 'productclick'
 
 # Flask app
@@ -39,7 +39,12 @@ def kafka_consumer():
         group_id='my-consumer-group',
         auto_offset_reset='earliest',  # Change to 'latest' if needed
         enable_auto_commit=True,
-        value_deserializer=lambda m: json.loads(m.decode('utf-8'))
+        value_deserializer=lambda m: json.loads(m.decode('utf-8')),
+        # Add SSL/TLS configuration
+        security_protocol='SSL',
+        ssl_cafile='/etc/kafka/ca.pem',  # Path to CA certificate
+        ssl_certfile='/etc/kafka/service.cert',  # Path to the service certificate
+        ssl_keyfile='/etc/kafka/service.key',  # Path to the service key
     )
 
     for message in consumer:
